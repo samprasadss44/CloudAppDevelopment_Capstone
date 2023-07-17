@@ -13,7 +13,9 @@
 </head>
 <body>
 <!-- Navigation bar -->
+{% if user.is_authenticated %}
 {% include 'djangoapp/navigation.html' with active_page='contact' %}
+{% endif %}
 
     <div class="container">
         <h1>Contact Us</h1>

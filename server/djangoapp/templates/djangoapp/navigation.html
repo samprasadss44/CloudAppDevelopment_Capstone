@@ -4,9 +4,9 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
+      <ul class="nav navbar-nav mr-auto"> <!-- Left side navigation -->
+        {% if user.is_authenticated %}
         <li class="nav-item {% if active_page == 'index' %}active{% endif %}">
             <a class="nav-link" href="{% url 'djangoapp:index' %}">Home</a>
         </li>
@@ -16,6 +16,29 @@
         <li class="nav-item {% if active_page == 'contact' %}active{% endif %}">
             <a class="nav-link" href="{% url 'djangoapp:contact_us' %}">Contact</a>
         </li>
+        {% endif %}
+      </ul>
+  
+      <ul class="nav navbar-nav ml-auto"> <!-- Right side navigation -->
+        {% if user.is_authenticated %}
+        <li>
+            <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+            <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+        </li>
+        {% else %}
+        <li>
+            <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Username" name="username" >
+                    <input type="password" class="form-control" placeholder="Password" name="psw" >
+                    <button class="btn btn-primary" type="submit">Login</button>
+                    <a class="btn btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                </div>
+            </form>
+        </li>
+        {% endif %}
       </ul>
     </div>
   </nav>
+  
