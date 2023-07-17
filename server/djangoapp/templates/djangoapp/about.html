@@ -13,12 +13,12 @@
 </head>
 <body>
 <!-- Navigation bar -->
-{% include 'djangoapp/navigation.html' %}
-    <div class="container">
-        <h1>Welcome to Best Cars Dealership</h1>
-        <p>Home to the best cars in North America. We sell domestic and imported cars at reasonable prices.</p>
-    </div>
+{% include 'djangoapp/navigation.html' with active_page='about' %}
+
+<div class="container">
+    <h1>Welcome to Best Cars Dealership</h1>
+    <p>Home to the best cars in North America. We sell domestic and imported cars at reasonable prices.</p>
+</div>
+
 </body>
 </html>
-
-

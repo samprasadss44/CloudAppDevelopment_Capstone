@@ -7,16 +7,15 @@
   
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="{% url 'djangoapp:index' %}">Home</a>
+        <li class="nav-item {% if active_page == 'index' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'djangoapp:index' %}">Home</a>
         </li>
-        <li class="nav-item {% if request.path == '/about/' %}active{% endif %}">
-          <a class="nav-link" href="{% url 'djangoapp:about_us' %}">About</a>
+        <li class="nav-item {% if active_page == 'about' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'djangoapp:about_us' %}">About</a>
         </li>
-        <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
-          <a class="nav-link" href="{% url 'djangoapp:contact_us' %}">Contact</a>
+        <li class="nav-item {% if active_page == 'contact' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'djangoapp:contact_us' %}">Contact</a>
         </li>
       </ul>
     </div>
   </nav>
-  
