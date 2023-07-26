@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Dealership Review</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Table CSS (Optional, if you want to use the extension) -->
     <link href="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 </head>
 
 <body>
 <!-- Navigation bar -->
 {% include 'djangoapp/navigation.html' with active_page='about' %}
 
-
 <!-- Dealer table or other content -->
+<div class="container">
+    <h1>List of Dealerships</h1>
+    <ul class="list-group">
+        {% for dealer_name in dealerships_data %}
+            <li class="list-group-item">{{ dealer_name }}</li>
+            <br> <!-- Add line break after each dealer name -->
+        {% endfor %}
+    </ul>
+</div>
 
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- Bootstrap Table JS (Optional, if you want to use the extension) -->
+<script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
+<!-- Bootstrap Table Filter Control JS (Optional, if you want to use the extension) -->
+<script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 </body>
 </html>

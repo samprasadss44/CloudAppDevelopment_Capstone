@@ -1,34 +1,60 @@
 import requests
 import json
-# import related models here
+from .models import CarDealer
 from requests.auth import HTTPBasicAuth
+from django.http import HttpResponse  # Import HttpResponse here
 
+def get_request(url, **kwargs):
+    print(kwargs)
+    print("GET from {} ".format(url))
+    try:
+        # Call get method of requests library with URL and parameters
+        response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                    params=kwargs)
+        response.raise_for_status()  # Raise an error for unsuccessful responses
+        json_data = json.loads(response.text)
+        return json_data
+    except requests.exceptions.RequestException as e:
+        # If a network exception occurs, print the error and return None or an empty dictionary
+        print("Network exception occurred:", e)
+        return None
+    except json.JSONDecodeError as e:
+        # If JSON decoding fails, print the error and return None or an empty dictionary
+        print("JSON decoding error:", e)
+        return None
 
-# Create a `get_request` to make HTTP GET requests
-# e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
-#                                     auth=HTTPBasicAuth('apikey', api_key))
+def get_dealers_from_cf(url, **kwargs):
+    results = []
+    # Call get_request with a URL parameter
+    json_result = get_request(url)
+    if json_result and "result" in json_result:
+        dealers = json_result["result"]
+        for dealer in dealers:
+            dealer_doc = dealer.get("doc")
+            # Create a CarDealer object with values in the dealer object
+            dealer_obj = CarDealer(
+                doc_id=dealer.get("_id"),
+                address=dealer_doc.get("address"),
+                city=dealer_doc.get("city"),
+                full_name=dealer_doc.get("full_name"),
+                id=dealer_doc.get("id"),
+                lat=dealer_doc.get("lat"),
+                long=dealer_doc.get("long"),
+                short_name=dealer_doc.get("short_name"),
+                st=dealer_doc.get("st"),
+                state=dealer_doc.get("state"),
+                zip_code=dealer_doc.get("zip")
+            )
+            results.append(dealer_obj)
+    return results
 
-
-# Create a `post_request` to make HTTP POST requests
-# e.g., response = requests.post(url, params=kwargs, json=payload)
-
-
-# Create a get_dealers_from_cf method to get dealers from a cloud function
-# def get_dealers_from_cf(url, **kwargs):
-# - Call get_request() with specified arguments
-# - Parse JSON results into a CarDealer object list
-
-
-# Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
-# def get_dealer_by_id_from_cf(url, dealerId):
-# - Call get_request() with specified arguments
-# - Parse JSON results into a DealerView object list
-
-
-# Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
-# - Call get_request() with specified arguments
-# - Get the returned sentiment label such as Positive or Negative
-
-
+def get_dealerships(request):
+    if request.method == "GET":
+        url = "https://us-east.functions.appdomain.cloud/api/v1/web/c402b745-cf6b-4c53-97b6-f569d52c4d27/dealership-package/get_all_dealerships"
+        # Get dealers from the URL
+        dealerships = get_dealers_from_cf(url)
+        # Concat all dealer's short name
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # Return a list of dealer short name
+        return HttpResponse(dealer_names)
 

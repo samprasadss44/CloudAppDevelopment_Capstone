@@ -29,3 +29,19 @@ class CarModel(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.get_type_display()}) - {self.car_make.name}"
+
+class CarDealer(models.Model):
+    doc_id = models.CharField(max_length=50, primary_key=True)
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=50)
+    full_name = models.CharField(max_length=100)
+    id = models.IntegerField()  # Change the field name to 'id'
+    lat = models.FloatField()
+    long = models.FloatField()
+    short_name = models.CharField(max_length=20)
+    st = models.CharField(max_length=2)  # Assuming 'st' is for the state abbreviation
+    state = models.CharField(max_length=100)  # Add the 'state' field
+    zip_code = models.CharField(max_length=10)  # Change the field name to 'zip_code'
+
+    def __str__(self):
+        return self.full_name
