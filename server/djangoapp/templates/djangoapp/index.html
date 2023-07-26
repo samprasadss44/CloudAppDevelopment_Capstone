@@ -18,7 +18,7 @@
     <h1>List of Dealerships</h1>
     <ul class="list-group">
         {% for dealer_name in dealerships_data %}
-            <li class="list-group-item">{{ dealer_name }}</li>
+            <li class="list-group-item">{{ dealer_name.short_name }}</li>
             <br> <!-- Add line break after each dealer name -->
         {% endfor %}
     </ul>

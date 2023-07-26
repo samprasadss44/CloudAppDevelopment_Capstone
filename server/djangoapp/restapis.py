@@ -1,6 +1,6 @@
 import requests
 import json
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 from django.http import HttpResponse  # Import HttpResponse here
 
@@ -54,7 +54,32 @@ def get_dealerships(request):
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        #dealer_names = ','.join([dealer.short_name for dealer in dealerships])
         # Return a list of dealer short name
-        return HttpResponse(dealer_names)
+        return dealerships
+
+def get_dealer_reviews_from_cf(dealer_id):
+    url = "https://us-east.functions.appdomain.cloud/api/v1/web/c402b745-cf6b-4c53-97b6-f569d52c4d27/dealership-package/get-all-reviews"
+
+    # Call get_request with the URL parameter to get reviews by dealer's id
+    json_result = get_request(url, dealerId=dealer_id)
+    reviews = []
+
+    if json_result:
+        # Loop through the JSON array of review documents
+        for review_doc in json_result:
+            review_obj = DealerReview(
+                name=review_doc.get("name"),
+                purchase=review_doc.get("purchase"),
+                review=review_doc.get("review"),
+                purchase_date=review_doc.get("purchase_date"),
+                car_make=review_doc.get("car_make"),
+                car_model=review_doc.get("car_model"),
+                car_year=review_doc.get("car_year"),
+                sentiment=review_doc.get("sentiment"),
+                id=review_doc.get("_id"),
+            )
+            reviews.append(review_obj)
+
+    return reviews
 
