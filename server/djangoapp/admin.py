@@ -1,13 +1,21 @@
 from django.contrib import admin
-# from .models import related models
+from .models import CarMake, CarModel
 
 
-# Register your models here.
+class CarModelInline(admin.TabularInline):
+    model = CarModel
 
-# CarModelInline class
 
-# CarModelAdmin class
+class CarModelAdmin(admin.ModelAdmin):
+    list_display = ['name', 'car_make', 'type', 'year', 'dealer_id']
+    # Add any other fields you want to display in the list view
 
-# CarMakeAdmin class with CarModelInline
 
-# Register models here
+class CarMakeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'description']
+    # Add any other fields you want to display in the list view
+    inlines = [CarModelInline]
+
+
+admin.site.register(CarMake, CarMakeAdmin)
+admin.site.register(CarModel, CarModelAdmin)
