@@ -16,11 +16,13 @@
     <!-- Add reviews as cards -->
     <div class="container mt-5">
         <h1>Dealer Reviews</h1>
+
         <div class="card-columns mt-3">
             {% for review in reviews %}
             <div class="card">
-                <img class="card-img-top" src="{% static 'media/emoji/' %}{{ review.sentiment }}.png" alt="Emoji">
                 <div class="card-body">
+                    <img class="card-img-top" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" alt="Emoji" >
+
                     <h5 class="card-title">Review for {{ review.dealership.full_name }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{ review.name }}</h6>
                     <p class="card-text">{{ review.review }}</p>

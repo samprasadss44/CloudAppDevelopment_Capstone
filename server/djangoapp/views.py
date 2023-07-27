@@ -10,7 +10,8 @@ import logging
 import json
 from django.contrib.auth.decorators import login_required
 from .restapis import get_dealerships, get_dealer_reviews_from_cf, analyze_review_sentiments, post_request
-
+from django.shortcuts import get_object_or_404, render
+from .models import CarDealer, CarModel
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -92,13 +93,18 @@ def get_dealerships_view(request):
 # def get_dealer_details(request, dealer_id):
 def get_dealer_details(request, dealer_id):
     context = {}
-    
+    print("request",request)
+    # Get the dealer object using the dealer_id
+    #dealer = get_object_or_404(CarDealer, id=dealer_id)
     # Call the get_dealer_reviews_from_cf method to get the reviews for the dealer
     reviews = get_dealer_reviews_from_cf(dealer_id)
-
+   # dealer = get_object_or_404(CarDealer, id=dealer_id)
+    #print("dealer",dealer)
+    # Get the dealer object using the dealer_id
     # Append the list of reviews to the context
-    context['reviews'] = reviews
-    
+    context = {
+            'reviews': reviews,
+        }
     # Return a HttpResponse with the reviews data
     if request.method == "GET":
          return render(request, 'djangoapp/dealer_details.html', context)
@@ -112,6 +118,11 @@ def add_review(request, dealer_id):
     context = {}
     if request.method == 'GET':
         # If it's a GET request, render the form to submit a review
+        # Get the list of cars to display in the dropdown
+        cars = CarModel.objects.all()  # Replace 'Car' with the actual model name for cars
+
+        # Add 'cars' to the context
+        context['cars'] = cars
         return render(request, 'djangoapp/add_review.html', context)
     elif request.method == 'POST':
         # If it's a POST request, process the form data and submit the review

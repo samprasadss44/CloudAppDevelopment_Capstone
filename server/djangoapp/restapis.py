@@ -83,7 +83,10 @@ def get_dealer_reviews_from_cf(dealer_id):
             
             # Analyze the sentiment for the review using Watson NLU
             sentiment_response = analyze_review_sentiments(review_text)
-            sentiment = sentiment_response.get("sentiment") if sentiment_response else None
+            print("Sentiment123", sentiment_response)
+
+            #sentiment = sentiment_response.get("sentiment") if sentiment_response else None
+            #print("Sentiment:", sentiment)
 
             review_obj = DealerReview(
                 name=review_doc.get("name"),
@@ -93,7 +96,7 @@ def get_dealer_reviews_from_cf(dealer_id):
                 car_make=review_doc.get("car_make"),
                 car_model=review_doc.get("car_model"),
                 car_year=review_doc.get("car_year"),
-                sentiment=sentiment,  # Assign the sentiment to the DealerReview object
+                sentiment=sentiment_response,  # Assign the sentiment to the DealerReview object
                 id=review_doc.get("_id"),
             )
             reviews.append(review_obj)
@@ -104,12 +107,17 @@ def analyze_review_sentiments(review_text):
     url = "https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/4cd5c906-0192-4cd4-8ab9-f39894146c75/v1/analyze?version=2019-07-12"
     api_key = "sD3XHJa0nKttvAlGugGkFpdj02oG220lpVbEodqhl2GF"  # Replace with your actual API key for the Watson NLU service
     # Set up the parameters for the Watson NLU request
+    params = {
+        "text": review_text,
+        "features": {
+            "sentiment": {}
+        }
+    }
 
     try:
-        # Make the request to Watson NLU
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                auth=HTTPBasicAuth('apikey', api_key))
-        print("response", response)
+        # Make the POST request to Watson NLU
+        response = requests.post(url, json=params, headers={'Content-Type': 'application/json'},
+                                 auth=HTTPBasicAuth('apikey', api_key))
         # Check if the request was successful
         if response.status_code == 200:
             # Parse the JSON response
@@ -119,7 +127,8 @@ def analyze_review_sentiments(review_text):
             sentiment = json_result.get("sentiment", {}).get("document", {}).get("label")
             return sentiment
         else:
-            # If the request was not successful, return None
+            # If the request was not successful, print the response body and return None
+            print(f"Error occurred: Status Code {response.status_code}, Response Body: {response.text}")
             return None
     except requests.exceptions.RequestException as e:
         # Handle any exceptions that occurred during the request
