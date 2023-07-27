@@ -101,7 +101,7 @@ def get_dealer_reviews_from_cf(dealer_id):
     return reviews
 
 def analyze_review_sentiments(dealerreview):
-    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/4cd5c906-0192-4cd4-8ab9-f39894146c75/v1/analyze"
+    url = "https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/4cd5c906-0192-4cd4-8ab9-f39894146c75/analyse"
     # Replace "YOUR_INSTANCE_ID" with your actual Watson NLU instance ID
 
     # Set up the parameters

@@ -5,7 +5,7 @@
     <title>Dealership Review</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <!-- Bootstrap Table CSS (Optional, if you want to use the extension) -->
+    <!-- Bootstrap Table CSS -->
     <link href="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.css" rel="stylesheet">
 </head>
 
@@ -16,21 +16,45 @@
 <!-- Dealer table or other content -->
 <div class="container">
     <h1>List of Dealerships</h1>
-    <ul class="list-group">
-        {% for dealer_name in dealerships_data %}
-            <li class="list-group-item">{{ dealer_name.short_name }}</li>
-            <br> <!-- Add line break after each dealer name -->
-        {% endfor %}
-    </ul>
+    <table class="table" id="table" data-filter-control="true">
+        <thead>
+            <tr>
+                <th data-field="id" data-filter-control="input">ID</th>
+                <th data-field="full_name" data-filter-control="input">Dealer Name</th>
+                <th data-field="city" data-filter-control="input">City</th>
+                <th data-field="address" data-filter-control="input">Address</th>
+                <th data-field="zip" data-filter-control="input">Zip</th>
+                <th data-field="state" data-filter-control="select">State</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dealer in dealerships_data %}
+                <tr>
+                    <td>{{ dealer.id }}</td>
+                    <td><a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{ dealer.full_name }}</a></td>
+                    <td>{{ dealer.city }}</td>
+                    <td>{{ dealer.address }}</td>
+                    <td>{{ dealer.zip }}</td>
+                    <td>{{ dealer.state }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <!-- Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<!-- Bootstrap Table JS (Optional, if you want to use the extension) -->
+<!-- Bootstrap Table JS -->
 <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
-<!-- Bootstrap Table Filter Control JS (Optional, if you want to use the extension) -->
+<!-- Bootstrap Table Filter Control JS -->
 <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+
+<!-- JavaScript snippet to turn on filter control for the table element -->
+<script>
+    $(document).ready(function() {
+        $('#table').bootstrapTable();
+    });
+</script>
 </body>
 </html>

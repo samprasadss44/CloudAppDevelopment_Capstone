@@ -50,16 +50,17 @@ from django.db import models
 from .models import CarDealer  # Import the CarDealer model
 
 class DealerReview(models.Model):
-    dealership = models.CharField(max_length=100)
+    car_make = models.CharField(max_length=50)
+    car_model = models.CharField(max_length=50)
+    car_year = models.IntegerField()
+    dealership = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
     purchase = models.BooleanField(default=False)
-    review = models.TextField()
     purchase_date = models.DateField(null=True, blank=True)
-    car_make = models.CharField(max_length=50, null=True, blank=True)
-    car_model = models.CharField(max_length=50, null=True, blank=True)
-    car_year = models.IntegerField(null=True, blank=True)
+    review = models.TextField()
+    # Additional field for sentiment analysis (can be added later)
     sentiment = models.CharField(max_length=20, null=True, blank=True)
-    id = models.CharField(max_length=100, primary_key=True)
 
     def __str__(self):
         return f"Review for {self.dealership} - {self.name} - Car: {self.car_make} {self.car_model} ({self.car_year})"

@@ -16,20 +16,22 @@
     <!-- Add reviews as cards -->
     <div class="container mt-5">
         <h1>Dealer Reviews</h1>
-        <div class="row mt-3">
+        <div class="card-columns mt-3">
             {% for review in reviews %}
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Review for {{ review.dealership.full_name }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ review.name }}</h6>
-                        <p class="card-text">{{ review.review }}</p>
-                    </div>
+            <div class="card">
+                <img class="card-img-top" src="{% static 'media/emoji/' %}{{ review.sentiment }}.png" alt="Emoji">
+                <div class="card-body">
+                    <h5 class="card-title">Review for {{ review.dealership.full_name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ review.name }}</h6>
+                    <p class="card-text">{{ review.review }}</p>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-</body>
 
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
 </html>
