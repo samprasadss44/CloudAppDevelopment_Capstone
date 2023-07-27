@@ -7,13 +7,13 @@ from django.http import HttpResponse  # Import HttpResponse here
 def get_request(url, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
-    api_key = 'A2CSAdannOiHGvz-pit1HLlqXwHBTEiS_44cfqiJeaGP'
+    api_key = 'sD3XHJa0nKttvAlGugGkFpdj02oG220lpVbEodqhl2GF'
     try:
         # Call get method of requests library with URL and parameters
         if api_key:
             # Basic authentication GET
                  response = requests.get(url, params=kwargs, headers={'Content-Type': 'application/json'},
-                                    auth=HTTPBasicAuth('apikey', api_key))
+                                    auth=HTTPBasicAuth('apikey', 'sD3XHJa0nKttvAlGugGkFpdj02oG220lpVbEodqhl2GF'))
         else:
             # no authentication GET
             response = requests.get(url, params=kwargs, headers={'Content-Type': 'application/json'})
@@ -100,25 +100,31 @@ def get_dealer_reviews_from_cf(dealer_id):
 
     return reviews
 
-def analyze_review_sentiments(dealerreview):
-    url = "https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/4cd5c906-0192-4cd4-8ab9-f39894146c75/analyse"
-    # Replace "YOUR_INSTANCE_ID" with your actual Watson NLU instance ID
+def analyze_review_sentiments(review_text):
+    url = "https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/4cd5c906-0192-4cd4-8ab9-f39894146c75/v1/analyze?version=2019-07-12"
+    api_key = "sD3XHJa0nKttvAlGugGkFpdj02oG220lpVbEodqhl2GF"  # Replace with your actual API key for the Watson NLU service
+    # Set up the parameters for the Watson NLU request
 
-    # Set up the parameters
-    params = {
-        "text": dealerreview,
-        "version": "2021-09-01",  # Replace with the desired NLU version
-        "features": "sentiment",
-        "return_analyzed_text": True
-    }
+    try:
+        # Make the request to Watson NLU
+        response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                auth=HTTPBasicAuth('apikey', api_key))
+        print("response", response)
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Parse the JSON response
+            json_result = response.json()
 
-    # Replace "apikey" with your actual API key for the Watson NLU service
-    api_key =  'A2CSAdannOiHGvz-pit1HLlqXwHBTEiS_44cfqiJeaGP'
-
-    response = get_request(url, params=params, headers={'Content-Type': 'application/json'},
-                           auth=HTTPBasicAuth('apikey', api_key))
-    return response
-
+            # Extract and return the sentiment
+            sentiment = json_result.get("sentiment", {}).get("document", {}).get("label")
+            return sentiment
+        else:
+            # If the request was not successful, return None
+            return None
+    except requests.exceptions.RequestException as e:
+        # Handle any exceptions that occurred during the request
+        print(f"Error occurred during request: {e}")
+        return None
 
 def post_request(url, json_payload, **kwargs):
     print(kwargs)
