@@ -8,6 +8,9 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from django.contrib.auth.decorators import login_required
+from .restapis import get_dealerships, get_dealer_reviews_from_cf, analyze_review_sentiments, post_request
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -104,3 +107,63 @@ def get_dealer_details(request, dealer_id):
 # def add_review(request, dealer_id):
 # ...
 
+@login_required
+def add_review(request, dealer_id):
+    context = {}
+    if request.method == 'GET':
+        # If it's a GET request, render the form to submit a review
+        return render(request, 'djangoapp/add_review.html', context)
+    elif request.method == 'POST':
+        # If it's a POST request, process the form data and submit the review
+
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to post a review.")
+            return redirect('djangoapp:index')
+
+        # Get the form data from the request
+        name = request.POST['name']
+        purchase = request.POST['purchase']
+        review_text = request.POST['review']
+        purchase_date = request.POST['purchase_date']
+        car_make = request.POST['car_make']
+        car_model = request.POST['car_model']
+        car_year = request.POST['car_year']
+
+        # Analyze the review sentiment using Watson NLU
+        sentiment_response = analyze_review_sentiments(review_text)
+        sentiment = sentiment_response.get("sentiment") if sentiment_response else None
+
+        # Create the dictionary object for the review data
+        review = {
+            "time": datetime.utcnow().isoformat(),
+            "name": name,
+            "dealership": dealer_id,
+            "review": review_text,
+            "purchase": purchase,
+            "purchase_date": purchase_date,
+            "car_make": car_make,
+            "car_model": car_model,
+            "car_year": car_year,
+            "sentiment": sentiment,
+            # Add any additional attributes as needed for your cloud function
+        }
+
+        # Create the json_payload dictionary with the review key
+        json_payload = {"review": review}
+
+        # URL to post the review to (replace with your actual URL)
+        post_url = "https://us-east.functions.appdomain.cloud/api/v1/web/c402b745-cf6b-4c53-97b6-f569d52c4d27/dealership-package/post-reviews"
+
+        # Make the POST request to submit the review
+        post_response = post_request(post_url, json_payload, dealerId=dealer_id)
+
+        # Print the post response to the console
+        print("POST Response:", post_response)
+
+        # You can also append the post_response to an HttpResponse and render it on the browser
+        # response = HttpResponse(post_response, content_type='application/json')
+        # return response
+
+        # Redirect to the dealer details page after submitting the review
+        return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
